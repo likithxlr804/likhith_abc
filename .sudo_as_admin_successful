@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import rospy
+from geometry_msgs.msg import Twist
+from sensor_msgs.msg import LaserScan
+
+class MazeSolver:
+    def __init__(self):
+        rospy.init_node('maze_solver')
+        self.cmd_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+        self.scan_sub = rospy.Subscriber('/scan', LaserScan, self.scan_callback)
+        self.rate = rospy.Rate(10)  # Set the loop rate (10 Hz)
+
+    def scan_callback(self, scan_msg):
+        # Process the laser scan data
+        # Implement your maze-solving algorithm here
+        # You can use the scan_msg.ranges to access the range data
+
+        # Example: Rotate the robot in place
+        cmd_vel = Twist()
+        cmd_vel.angular.z = 0.5  # Rotate at 0.5 rad/s
+        self.cmd_pub.publish(cmd_vel)
+
+    def run(self):
+        while not rospy.is_shutdown():
+            # Keep publishing the twist command
+            self.rate.sleep()
+
+if __name__ == '__main__':
+    solver = MazeSolver()
+    solver.run()
+
